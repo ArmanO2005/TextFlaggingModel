@@ -24,37 +24,46 @@ nltk.download('stopwords')
 
 lemmatizer = WordNetLemmatizer()
 
-tag_map = defaultdict(lambda : wn.NOUN)
-tag_map['J'] = wn.ADJ
-tag_map['V'] = wn.VERB
-tag_map['R'] = wn.ADV
 
-def remove_punctuation(tokens):
+def Remove_punctuation(tokens):
     return [word for word in tokens if any([i in string.punctuation for i in word]) == False]
 
 
-def tokenize(data):
+def Tokenize(data):
     for i, document in enumerate(data['Title']):
-        data.loc[i, 'Title'] = [word_tokenize(t) for t in sent_tokenize(document.lower())]
-    
-    for i, document in enumerate(data['Title']):    
-        data.loc[i, 'Title'] = [remove_punctuation(sentence) for sentence in document]
+        data.loc[i, 'Title'] = word_tokenize(document.lower())
 
-def lemmatize(data):
+
+lemmatizer = WordNetLemmatizer()
+
+def Lemmatize(data):
+    tag_map = defaultdict(lambda : wn.NOUN)
+    tag_map['J'] = wn.ADJ
+    tag_map['V'] = wn.VERB
+    tag_map['R'] = wn.ADV
+
     for i, document in enumerate(data['Title']):
-        for j, sentence in enumerate(document):
-            sentence = remove_punctuation(sentence)
-            data.loc[i, 'Title'][j] = [lemmatizer.lemmatize(word, tag_map[tag[0]]) for word, tag in nltk.pos_tag(sentence) if word not in stopwords.words('english')]
-    
-def join_tokens(data):
-    for i, text in enumerate(data['Title']):
-        data.loc[i, 'Title'] = ' '.join([' '.join(sentence) for sentence in text])
+
+        # check
+        if type(data.loc[i, 'Title']) != list:
+            print(data.loc[i, 'Title'])
+            print(i)
+        
+        lemmatized_words = [lemmatizer.lemmatize(word, tag_map[tag[0]]) for word, tag in nltk.pos_tag(document) if word not in stopwords.words('english')]
+        data.loc[i, 'Title'] = lemmatized_words
+
+
+def Join_tokens(data):
+    for i, document in enumerate(data['Title']):
+        data.loc[i, 'Title'] = ' '.join(document)
     
 
 data = pd.read_csv("C://Users//arman//Dropbox//1 - App Dev//Chat AI stuff//training.csv").dropna()
-tokenize(data)
+Tokenize(data)
+Lemmatize(data)
+Join_tokens(data)
 
-data.to_csv('output.csv', index=False)
+print(data)
 
 
 # tfidf_vect = TfidfVectorizer(max_features=5000)

@@ -1,0 +1,52 @@
+' Excel Cleaning Script
+
+Sub CleanText()
+    Dim rng As Range
+    Dim cell As Range
+    Dim tempStr As String
+    Dim i As Integer
+    Dim atPos As Integer
+    Dim spacePos As Integer
+    Dim charsToRemove As String
+    Dim c As String
+    
+    ' Set the range to your needs
+    Set rng = Selection
+    
+    ' Define the characters to remove
+    charsToRemove = "!""#$%&'()*+,-/:;<=>?@[\]^_`{|}~1234567890."
+    
+    For Each cell In rng
+        tempStr = cell.Value
+        
+        ' Remove words attached to "@"
+        Do While InStr(tempStr, "@") > 0
+            atPos = InStr(tempStr, "@")
+            spacePos = InStr(atPos, tempStr, " ")
+            If spacePos > 0 Then
+                tempStr = Left(tempStr, atPos - 1) & Mid(tempStr, spacePos)
+            Else
+                tempStr = Left(tempStr, atPos - 1)
+            End If
+        Loop
+        
+        Do While InStr(tempStr, "http") > 0
+            atPos = InStr(tempStr, "http")
+            spacePos = InStr(atPos, tempStr, " ")
+            If spacePos > 0 Then
+                tempStr = Left(tempStr, atPos - 1) & Mid(tempStr, spacePos)
+            Else
+                tempStr = Left(tempStr, atPos - 1)
+            End If
+        Loop
+        
+        ' Remove all punctuation except periods
+        For i = 1 To Len(charsToRemove)
+            c = Mid(charsToRemove, i, 1)
+            tempStr = Replace(tempStr, c, "")
+        Next i
+        
+        ' Update the cell with the cleaned text
+        cell.Value = tempStr
+    Next cell
+End Sub
