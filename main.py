@@ -12,8 +12,10 @@ import string
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn import model_selection, naive_bayes, svm
-from sklearn.metrics import accuracy_score
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+
 
 nltk.download('punkt')
 nltk.download('corpora')
@@ -63,25 +65,27 @@ Tokenize(data)
 Lemmatize(data)
 Join_tokens(data)
 
-print(data)
+
+tfidf_vect = TfidfVectorizer()
+tfidf_matrix = tfidf_vect.fit_transform(data['Title'])
 
 
-# tfidf_vect = TfidfVectorizer(max_features=5000)
-# tfidf_matrix = tfidf_vect.fit_transform(data['Title'])
+tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vect.get_feature_names_out())
 
-# tfidf_vect.get_feature_names_out()
+X = tfidf_df
+y = data['Classification']
 
-# tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vect.get_feature_names_out())
-
-# tfidf_df.to_csv('output.csv', index=False)
-
-# X_train, X_test, y_train, y_test = model_selection.train_test_split(tfidf_matrix, data['Label'], test_size=0.3)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 
-# svm_model = svm.SVC(kernel='linear')
-# svm_model.fit(X_train, y_train)
+model = MultinomialNB()
+model.fit(X_train, y_train)
 
 
-# predictions = svm_model.predict(X_test)
-# accuracy = accuracy_score(y_test, predictions)
-# print(f"Accuracy: {accuracy}")
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f'Accuracy: {accuracy}')
+print(f'Classification Report:\n{report}')
