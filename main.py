@@ -10,7 +10,7 @@ from collections import defaultdict
 from nltk.corpus import wordnet as wn
 import string
 
-from sklearn.preprocessing import LabelEncoder
+import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report
@@ -69,14 +69,14 @@ Join_tokens(data)
 tfidf_vect = TfidfVectorizer()
 tfidf_matrix = tfidf_vect.fit_transform(data['Title'])
 
-
 tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vect.get_feature_names_out())
+
+# tfidf_df.to_csv('tfidf.csv', index=False)
 
 X = tfidf_df
 y = data['Classification']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
 
 model = MultinomialNB()
 model.fit(X_train, y_train)
@@ -89,3 +89,6 @@ report = classification_report(y_test, y_pred)
 
 print(f'Accuracy: {accuracy}')
 print(f'Classification Report:\n{report}')
+
+joblib.dump(model, 'model.pkl')
+joblib.dump(tfidf_vect, 'tfidf_vectorizer.joblib')
