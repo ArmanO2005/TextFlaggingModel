@@ -1,4 +1,4 @@
-' Excel Cleaning Script
+' Excel Cleaning Script, Alt + F11
 
 Sub CleanText()
     Dim rng As Range

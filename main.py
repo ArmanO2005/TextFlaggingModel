@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from gensim.models import Word2Vec
 import gensim
 import nltk
@@ -17,11 +16,11 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
 
 
-nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('corpora')
 nltk.download('wordnet')
-nltk.download('taggers')
-nltk.download('averaged_perceptron_tagger')
+nltk.download('taggers')  
+nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('stopwords')
 
 lemmatizer = WordNetLemmatizer()
@@ -60,7 +59,7 @@ def Join_tokens(data):
         data.loc[i, 'Title'] = ' '.join(document)
     
 
-data = pd.read_csv("C://Users//arman//Dropbox//1 - App Dev//Chat AI stuff//training.csv").dropna()
+data = pd.read_csv("C://Users//arman//0 - Chat AI Stuff//training.csv").dropna()
 Tokenize(data)
 Lemmatize(data)
 Join_tokens(data)
