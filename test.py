@@ -1,3 +1,5 @@
+bad = ['whiskey', 'vodka', 'alcohol', 'beer', 'drunk', 'drugs', 'weed', 'marijuana', 'cocaine', 'meth', 'heroin', 'crack', 'illegal', 'booger sugar',  'gun', 'pistol', 'shotgun', 'rifle', 'handgun', 'weapon']
+
 import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -9,6 +11,7 @@ from collections import defaultdict
 from nltk.corpus import wordnet as wn
 import string
 from main import Tokenize, Lemmatize, Join_tokens, Remove_punctuation
+
 
 nltk.download('punkt')
 nltk.download('corpora')
@@ -30,6 +33,10 @@ def Format_string(string):
 
 while True:
     test_document = input("message:")
+
+    if any([word in test_document for word in bad]):
+        print(['Bad'])
+        continue
 
     formatted_test_doc = Format_string(test_document)
     prediction = trained_model.predict(formatted_test_doc)

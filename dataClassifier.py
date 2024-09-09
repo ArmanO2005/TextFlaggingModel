@@ -6,33 +6,31 @@ client = OpenAI(
     api_key='ollama', # required, but unused
 )
 
-uncleanedData = pd.read_csv("C://Users//arman//0 - Chat AI Stuff//untrained_data_test.csv")
+uncleanedData = pd.read_csv("C://Users//arman//0 - Chat AI Stuff//unclassified_data_2.csv")
 
-# example = pd.DataFrame(
-#     {'Title': [
-#     'I love my dog',
-#     'Im gonna shoot up the school',
-#     'im gonna shoot some hoops',
-#     'I want to buy cocaine'],
-#     'Classification': ['', '', '', '']})
+badStuff = ['Dangerous', 'dangerous', 'illicit', 'illegal', 'hate', 'criminal', 'substance', 'explicit', 'malicious', 'drugs']
+goodStuff = ['Safe', 'safe']
 
 def classify_document(document):
     response = client.chat.completions.create(
         model="llama3.1",
         messages=[  
-            {"role": "system", "content": "You are a message classifier. You receive SMS data and classify it, you do not answer questions or engage in conversation. If a message includes mention of illegal drug use, pornography, guns, or other not safe for work content, return 'Bad'. Else, return 'Good'. Assume messages are good until there is a clear reason why they would be bad. Return either the word 'Good' or the word 'Bad'."},
+            {"role": "system", "content": "You are a message classifier. You receive SMS data and classify it, you do not answer questions or engage in conversation. If a message includes mention of illegal drug use, sex, guns, alcohol or explicit or hateful language, return 'Dangerous'. Else, return 'Safe'. Assume messages are safe until there is a clear reason why they would be dangerous. Return either the word 'Safe' or the word 'Dangerous'."},
             {"role": "user", "content": document}
         ]
-    )
+    )  
 
-    print(response.choices[0].message.content)
+    response = response.choices[0].message.content.lower()
+    print(response)
 
-    if ('Good' or 'good') in response.choices[0].message.content:
+    if any([word in response for word in goodStuff]):
         return 'Good'
-    elif ('Bad' or 'bad' or 'illicit substance' or 'illegal' ) in response.choices[0].message.content:
+    elif any([word in response for word in badStuff]):
+        print(document)
         return 'Bad'
     else:
-        return 'unsure'
+        print(document)
+        return 'Unsure'
 
 
 def classify_df(csv):
@@ -48,4 +46,4 @@ def See(output_csv):
 
 classify_df(uncleanedData)
 
-uncleanedData.to_csv('C://Users//arman//0 - Chat AI Stuff//classified_data.csv', index=False)
+uncleanedData.to_csv('C://Users//arman//0 - Chat AI Stuff//classified_data_2.csv', index=False)
