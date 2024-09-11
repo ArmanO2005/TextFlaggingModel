@@ -1,4 +1,4 @@
-bad = ['whiskey', 'vodka', 'alcohol', 'beer', 'drunk', 'drugs', 'weed', 'marijuana', 'cocaine', 'meth', 'heroin', 'crack', 'illegal', 'booger sugar',  'gun', 'pistol', 'shotgun', 'rifle', 'handgun', 'weapon']
+bad = ['whiskey', 'vodka', 'alcohol', 'beer', 'drunk', 'drugs', 'marijuana', 'cocaine', 'meth', 'heroin', 'crack', 'illegal', 'booger sugar',  'gun', 'pistol', 'shotgun', 'rifle', 'handgun', 'weapon']
 
 import joblib
 import pandas as pd
@@ -29,14 +29,14 @@ def Format_string(string):
     Tokenize(x)
     Lemmatize(x)
     Join_tokens(x)
-    return vectorizer.transform(x['Title'])
+    return vectorizer.transform(x['Title'])  
 
 while True:
     test_document = input("message:")
 
-    if any([word in test_document for word in bad]):
-        print(['Bad'])
-        continue
+    # if any([word in test_document for word in bad]):
+    #     print(['Bad'])
+    #     continue
 
     formatted_test_doc = Format_string(test_document)
     prediction = trained_model.predict(formatted_test_doc)
