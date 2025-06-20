@@ -2,7 +2,7 @@ import pandas as pd
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="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"
+    api_key=""
 )
 
 
